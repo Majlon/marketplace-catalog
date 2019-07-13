@@ -2,6 +2,7 @@ package cz.zonky.homework.majlon.marketplacecatalog.service;
 
 
 import cz.zonky.homework.majlon.marketplacecatalog.domain.loan.LoanDetail;
+import cz.zonky.homework.majlon.marketplacecatalog.domain.loan.SimpleLoan;
 import cz.zonky.homework.majlon.marketplacecatalog.scheduled.MarketplaceScanJob;
 import cz.zonky.homework.majlon.marketplacecatalog.utils.MarketplaceUtils;
 import io.reactivex.Maybe;
@@ -34,7 +35,7 @@ public class MarketplaceService {
         throw new NotImplementedException();
     }
 
-    public Observable<LoanDetail> getLoansNewerThan(Date date) {
+    public Observable<SimpleLoan> getLoansNewerThan(Date date) {
         log.info("Retrieving loans newer than: " + date);
 
         HttpHeaders headers = new HttpHeaders();
@@ -44,12 +45,13 @@ public class MarketplaceService {
 
         UriComponentsBuilder uri = UriComponentsBuilder.fromHttpUrl(URL);
         uri.queryParam("datePublished__gt", MarketplaceUtils.toParamDate(date));
+        uri.queryParam("fields", SimpleLoan.getFields());
 
-        ResponseEntity<LoanDetail[]> response = restTemplate.exchange(
+        ResponseEntity<SimpleLoan[]> response = restTemplate.exchange(
                 uri.toUriString(),
                 HttpMethod.GET,
                 entity,
-                LoanDetail[].class);
+                SimpleLoan[].class);
 
         if (response.hasBody()) {
             return Observable.fromArray(Objects.requireNonNull(response.getBody()));

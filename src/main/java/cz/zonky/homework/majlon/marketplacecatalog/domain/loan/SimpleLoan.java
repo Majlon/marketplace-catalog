@@ -14,7 +14,6 @@ public class SimpleLoan {
     private String currency;
     private String datePublished;
 
-
     public Long getId() {
         return id;
     }
@@ -103,7 +102,6 @@ public class SimpleLoan {
         this.datePublished = datePublished;
     }
 
-
     @Override
     public String toString() {
         return "SimpleLoan{" +
@@ -114,5 +112,19 @@ public class SimpleLoan {
                 ", currency='" + currency + '\'' +
                 ", datePublished='" + datePublished + '\'' +
                 '}';
+    }
+
+    public static String getFields() {
+        return "id," +
+                "url," +
+                "name," +
+                "purpose," +
+                "termInMonths," +
+                "interestRate," +
+                "revenueRate," +
+                "rating," +
+                "amount," +
+                "currency," +
+                "datePublished";
     }
 }

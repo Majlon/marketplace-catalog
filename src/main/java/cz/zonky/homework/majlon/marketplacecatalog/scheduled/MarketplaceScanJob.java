@@ -1,13 +1,12 @@
 package cz.zonky.homework.majlon.marketplacecatalog.scheduled;
 
-import cz.zonky.homework.majlon.marketplacecatalog.domain.loan.LoanDetail;
+import cz.zonky.homework.majlon.marketplacecatalog.domain.loan.SimpleLoan;
 import cz.zonky.homework.majlon.marketplacecatalog.service.MarketplaceService;
 import cz.zonky.homework.majlon.marketplacecatalog.utils.MarketplaceUtils;
 import io.reactivex.Observable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -41,7 +40,7 @@ public class MarketplaceScanJob {
     public void getMarketplaceLoans() {
         log.info("Retrieving marketplace data {}", MarketplaceUtils.toIso8601Date(new Date()));
 
-        Observable<LoanDetail> newLoans = marketplaceService.getLoansNewerThan(lastScan);
+        Observable<SimpleLoan> newLoans = marketplaceService.getLoansNewerThan(lastScan);
         newLoans.subscribe(System.out::println);
 
         lastScan = new Date();
