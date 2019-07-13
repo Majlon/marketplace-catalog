@@ -6,6 +6,7 @@ import cz.zonky.homework.majlon.marketplacecatalog.utils.MarketplaceUtils;
 import cz.zonky.homework.majlon.marketplacecatalog.workers.ConsoleNotifier;
 import cz.zonky.homework.majlon.marketplacecatalog.workers.FileWriter;
 import io.reactivex.Observable;
+import io.reactivex.schedulers.Schedulers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,7 @@ public class MarketplaceScanJob {
 
     private static final long SECOND = 1000L;
     private static final long MINUTE = 60 * SECOND;
+    private static final long SCAN_INTERVAL = 120 * MINUTE; // todo change back to 5
 
     private static final Logger log = LoggerFactory.getLogger(MarketplaceScanJob.class);
 
@@ -39,21 +41,23 @@ public class MarketplaceScanJob {
         this.consoleNotifier = consoleNotifier;
         this.fileWriter = fileWriter;
 
-
+        /*
+        * To compensate initial
+        * */
         Calendar now = Calendar.getInstance();
-        now.add(Calendar.MINUTE, -50);
+        now.add(Calendar.MILLISECOND,
+                new Long(SCAN_INTERVAL * -1).intValue());
         lastScan = now.getTime();
     }
 
-    //TODO change to 5 minutes before finishing
-    @Scheduled(fixedRate = 5 * SECOND)
+    @Scheduled(fixedRate = 10000) // todo change to scan_interval
     public void getMarketplaceLoans() {
         log.info("Retrieving marketplace data");
 
         Observable<SimpleLoan> newLoans = marketplaceService.getLoansNewerThan(lastScan);
 
-        newLoans.subscribe(consoleNotifier);
-        newLoans.subscribe(fileWriter);
+        newLoans.subscribeOn(Schedulers.computation()).subscribe(consoleNotifier);
+        newLoans.subscribeOn(Schedulers.io()).subscribe(fileWriter);
 
         lastScan = new Date();
     }

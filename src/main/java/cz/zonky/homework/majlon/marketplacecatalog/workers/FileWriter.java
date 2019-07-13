@@ -6,7 +6,6 @@ import cz.zonky.homework.majlon.marketplacecatalog.service.MarketplaceService;
 import io.reactivex.Maybe;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,8 +34,7 @@ public class FileWriter implements Observer<SimpleLoan> {
         Maybe<LoanDetail> loanDetail =
                 marketplaceService.getLoanDetail(simpleLoan.getId());
 
-        loanDetail.subscribeOn(Schedulers.io()).
-                subscribe(marketplaceService::saveLoanDetail);
+        loanDetail.subscribe(marketplaceService::saveLoanDetail);
     }
 
     @Override

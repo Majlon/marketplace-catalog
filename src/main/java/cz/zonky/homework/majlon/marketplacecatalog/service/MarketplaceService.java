@@ -1,6 +1,7 @@
 package cz.zonky.homework.majlon.marketplacecatalog.service;
 
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import cz.zonky.homework.majlon.marketplacecatalog.domain.loan.LoanDetail;
 import cz.zonky.homework.majlon.marketplacecatalog.domain.loan.SimpleLoan;
 import cz.zonky.homework.majlon.marketplacecatalog.scheduled.MarketplaceScanJob;
@@ -18,6 +19,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Date;
 import java.util.Objects;
 
@@ -33,8 +38,11 @@ public class MarketplaceService {
     @Value("${loanDetail.filePath}")
     private String LOAN_DETAIL_FOLDER;
 
+    private static final String LOAN_DETAIL = "_LoanDetail";
+    private static final String JSON = ".json";
 
     private static final Logger log = LoggerFactory.getLogger(MarketplaceScanJob.class);
+
     private final RestTemplate restTemplate = new RestTemplate();
 
     public Maybe<LoanDetail> getLoanDetail(Long id) {
@@ -51,11 +59,9 @@ public class MarketplaceService {
                 entity,
                 LoanDetail.class);
 
-        if (response.hasBody()) {
-            return Maybe.just(Objects.requireNonNull(response.getBody()));
-        } else {
-            return Maybe.empty();
-        }
+        return response.hasBody()
+                ? Maybe.just(Objects.requireNonNull(response.getBody()))
+                : Maybe.empty();
     }
 
     public Observable<SimpleLoan> getLoansNewerThan(Date date) {
@@ -76,16 +82,31 @@ public class MarketplaceService {
                 entity,
                 SimpleLoan[].class);
 
-        if (response.hasBody()) {
-            return Observable.fromArray(Objects.requireNonNull(response.getBody()));
-        } else {
-            return Observable.empty();
-        }
+        return response.hasBody()
+                ? Observable.fromArray(Objects.requireNonNull(response.getBody()))
+                : Observable.empty();
     }
 
     public Boolean saveLoanDetail(LoanDetail detail) {
-        log.info(detail.toString());
-        return true;
-    }
+        ObjectMapper mapper = new ObjectMapper();
 
+        String fileName = System.getProperty("user.dir")
+                + File.separator
+                + detail.getId().toString()
+                + LOAN_DETAIL
+                + JSON;
+
+        try {
+            FileWriter writer = new FileWriter(fileName);
+            BufferedWriter bw = new BufferedWriter(writer);
+
+            bw.write(mapper.writeValueAsString(detail));
+            bw.flush();
+            bw.close();
+            return true;
+        } catch (IOException e) {
+            log.error("Failed saving loan detail to disk ", e);
+            return false;
+        }
+    }
 }
