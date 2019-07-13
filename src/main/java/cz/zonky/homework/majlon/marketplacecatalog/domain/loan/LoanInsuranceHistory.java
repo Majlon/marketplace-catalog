@@ -20,4 +20,12 @@ public class LoanInsuranceHistory {
     public void setPolicyPeriodTo(String policyPeriodTo) {
         this.policyPeriodTo = policyPeriodTo;
     }
+
+    @Override
+    public String toString() {
+        return "LoanInsuranceHistory{" +
+                "policyPeriodFrom='" + policyPeriodFrom + '\'' +
+                ", policyPeriodTo='" + policyPeriodTo + '\'' +
+                '}';
+    }
 }

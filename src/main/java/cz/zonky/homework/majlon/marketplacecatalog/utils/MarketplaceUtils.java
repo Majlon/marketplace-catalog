@@ -15,6 +15,7 @@ public class MarketplaceUtils {
     }
 
     public static String toParamDate(Date date) {
+        PARAM_DATE.setTimeZone(TimeZone.getTimeZone("CET"));
         return PARAM_DATE.format(date);
     }
 }

@@ -257,16 +257,37 @@ public class LoanDetail {
         this.insuranceHistory = insuranceHistory;
     }
 
-
     @Override
     public String toString() {
         return "LoanDetail{" +
                 "id=" + id +
+                ", url='" + url + '\'' +
                 ", name='" + name + '\'' +
-                ", datePublished='" + datePublished + '\'' +
+                ", story='" + story + '\'' +
+                ", purpose='" + purpose + '\'' +
+                ", photos=" + photos +
+                ", nickName='" + nickName + '\'' +
+                ", termInMonths=" + termInMonths +
+                ", interestRate=" + interestRate +
+                ", revenueRate=" + revenueRate +
+                ", annuityWithInsurance=" + annuityWithInsurance +
                 ", rating='" + rating + '\'' +
+                ", topped=" + topped +
+                ", amount=" + amount +
+                ", currency='" + currency + '\'' +
+                ", remainingInvestment=" + remainingInvestment +
+                ", reservedAmount=" + reservedAmount +
+                ", investmentRate=" + investmentRate +
+                ", covered=" + covered +
+                ", datePublished='" + datePublished + '\'' +
+                ", published=" + published +
+                ", deadline='" + deadline + '\'' +
+                ", investmentsCount=" + investmentsCount +
+                ", questionsCount=" + questionsCount +
                 ", region='" + region + '\'' +
                 ", mainIncomeType='" + mainIncomeType + '\'' +
+                ", insuranceActive=" + insuranceActive +
+                ", insuranceHistory=" + insuranceHistory +
                 '}';
     }
 }
