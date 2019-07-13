@@ -2,7 +2,7 @@ package cz.zonky.homework.majlon.marketplacecatalog.domain.loan;
 
 import java.util.List;
 
-public class Loan {
+public class LoanDetail {
 
     private Long id;
     private String url;
@@ -260,7 +260,7 @@ public class Loan {
 
     @Override
     public String toString() {
-        return "Loan{" +
+        return "LoanDetail{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", datePublished='" + datePublished + '\'' +
