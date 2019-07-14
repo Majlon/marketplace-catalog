@@ -1,5 +1,9 @@
 package cz.zonky.homework.majlon.marketplacecatalog.domain.loan;
 
+/**
+ * Simplified version of loan entity.
+ *
+ */
 public class SimpleLoan {
 
     private Long id;

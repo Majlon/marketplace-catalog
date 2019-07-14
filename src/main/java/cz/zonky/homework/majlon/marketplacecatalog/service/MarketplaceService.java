@@ -26,6 +26,12 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.Objects;
 
+/**
+ * General service for retrieving marketplace info
+ * and loans/loan details. Important settings are
+ * located in application.properties.
+ *
+ */
 @Service
 public class MarketplaceService {
 
@@ -35,7 +41,7 @@ public class MarketplaceService {
     @Value("${loans.URL}")
     private String LOANS_URL;
 
-    @Value("${loanDetail.filePath}")
+    @Value("${loanDetail.exportFolder}")
     private String LOAN_DETAIL_FOLDER;
 
     private static final String LOAN_DETAIL = "_LoanDetail";
@@ -88,16 +94,31 @@ public class MarketplaceService {
     }
 
     public Boolean saveLoanDetail(LoanDetail detail) {
+        log.info("Saving loan detail to file");
         ObjectMapper mapper = new ObjectMapper();
 
-        String fileName = System.getProperty("user.dir")
+        File exportFolder = new File(System.getProperty("user.dir")
                 + File.separator
-                + detail.getId().toString()
-                + LOAN_DETAIL
-                + JSON;
+                + LOAN_DETAIL_FOLDER);
 
         try {
-            FileWriter writer = new FileWriter(fileName);
+            boolean folderCreated = true;
+
+            if (!exportFolder.exists()) {
+                folderCreated = exportFolder.mkdir();
+            }
+
+            if (!folderCreated) {
+                throw new IOException("Failed to create loan export folder");
+            }
+
+            File fullExportPath = new File(exportFolder.getPath()
+                    + File.separator
+                    + detail.getId().toString()
+                    + LOAN_DETAIL
+                    + JSON);
+
+            FileWriter writer = new FileWriter(fullExportPath);
             BufferedWriter bw = new BufferedWriter(writer);
 
             bw.write(mapper.writeValueAsString(detail));

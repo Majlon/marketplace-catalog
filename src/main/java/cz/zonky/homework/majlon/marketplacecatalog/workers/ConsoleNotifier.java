@@ -7,19 +7,25 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+/**
+ *  Component for notifying user about
+ *  new loans via console.
+ */
 @Component
 public class ConsoleNotifier implements Observer<SimpleLoan> {
 
     private static final Logger log = LoggerFactory.getLogger(ConsoleNotifier.class);
+    private int loansCounter;
 
     @Override
     public void onSubscribe(Disposable disposable) {
-        log.info("Console notifier just subscribed!");
+        loansCounter = 0;
     }
 
     @Override
     public void onNext(SimpleLoan simpleLoan) {
         log.info("Retrieved loan info: " + simpleLoan);
+        loansCounter++;
     }
 
     @Override
@@ -29,6 +35,6 @@ public class ConsoleNotifier implements Observer<SimpleLoan> {
 
     @Override
     public void onComplete() {
-        log.info("Console notifier just finished!");
+        log.info("Received loans count: " + loansCounter);
     }
 }

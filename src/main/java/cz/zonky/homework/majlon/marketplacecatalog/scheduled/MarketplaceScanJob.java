@@ -17,6 +17,11 @@ import java.util.Calendar;
 import java.util.Date;
 
 
+/**
+ * Periodically scans marketplace for new loans in 5
+ * minute intervals
+ *
+ */
 @Component
 public class MarketplaceScanJob {
 
@@ -42,8 +47,9 @@ public class MarketplaceScanJob {
         this.fileWriter = fileWriter;
 
         /*
-        * To compensate initial
-        * */
+        * To compensate initial interval, lastScan
+        * variable is reduced by value of SCAN_INTERVAL
+        */
         Calendar now = Calendar.getInstance();
         now.add(Calendar.MILLISECOND,
                 new Long(SCAN_INTERVAL * -1).intValue());
@@ -52,9 +58,7 @@ public class MarketplaceScanJob {
 
     @Scheduled(fixedRate = 10000) // todo change to scan_interval
     public void getMarketplaceLoans() {
-        log.info("Retrieving marketplace data");
-
-        Observable<SimpleLoan> newLoans = marketplaceService.getLoansNewerThan(lastScan);
+        final Observable<SimpleLoan> newLoans = marketplaceService.getLoansNewerThan(lastScan);
 
         newLoans.subscribeOn(Schedulers.computation()).subscribe(consoleNotifier);
         newLoans.subscribeOn(Schedulers.io()).subscribe(fileWriter);

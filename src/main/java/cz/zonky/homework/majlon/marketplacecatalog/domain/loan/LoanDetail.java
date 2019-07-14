@@ -2,6 +2,9 @@ package cz.zonky.homework.majlon.marketplacecatalog.domain.loan;
 
 import java.util.List;
 
+/**
+ * Detailed loan entity with all its attributes.
+ */
 public class LoanDetail {
 
     private Long id;
@@ -271,6 +274,73 @@ public class LoanDetail {
                 ", currency='" + currency + '\'' +
                 ", mainIncomeType='" + mainIncomeType + '\'' +
                 '}';
+    }
+
+
+    /**
+     * Loan photo inner class, part of Loan Detail.
+     */
+    public static class LoanPhoto {
+
+        private String name;
+        private String url;
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getUrl() {
+            return url;
+        }
+
+        public void setUrl(String url) {
+            this.url = url;
+        }
+
+        @Override
+        public String toString() {
+            return "LoanPhoto{" +
+                    "name='" + name + '\'' +
+                    ", url='" + url + '\'' +
+                    '}';
+        }
+    }
+
+    /**
+     * Insurance history inner class, part of Loan Detail.
+     */
+    public static class LoanInsuranceHistory {
+
+        private String policyPeriodFrom;
+        private String policyPeriodTo;
+
+        public String getPolicyPeriodFrom() {
+            return policyPeriodFrom;
+        }
+
+        public void setPolicyPeriodFrom(String policyPeriodFrom) {
+            this.policyPeriodFrom = policyPeriodFrom;
+        }
+
+        public String getPolicyPeriodTo() {
+            return policyPeriodTo;
+        }
+
+        public void setPolicyPeriodTo(String policyPeriodTo) {
+            this.policyPeriodTo = policyPeriodTo;
+        }
+
+        @Override
+        public String toString() {
+            return "LoanInsuranceHistory{" +
+                    "policyPeriodFrom='" + policyPeriodFrom + '\'' +
+                    ", policyPeriodTo='" + policyPeriodTo + '\'' +
+                    '}';
+        }
     }
 }
 

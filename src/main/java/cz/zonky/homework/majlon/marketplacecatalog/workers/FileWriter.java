@@ -11,12 +11,17 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+/**
+ * Component for saving loan details to dedicated folder.
+ * Loan details are saved in JSON format.
+ */
 @Component
 public class FileWriter implements Observer<SimpleLoan> {
 
     private static final Logger log = LoggerFactory.getLogger(FileWriter.class);
-
     private final MarketplaceService marketplaceService;
+    private int fileCounter;
+    private int savedFiles;
 
     @Autowired
     public FileWriter(MarketplaceService marketplaceService) {
@@ -25,16 +30,23 @@ public class FileWriter implements Observer<SimpleLoan> {
 
     @Override
     public void onSubscribe(Disposable disposable) {
-
+        fileCounter = 0;
+        savedFiles = 0;
     }
 
     @Override
     public void onNext(SimpleLoan simpleLoan) {
-        log.info("Will save to file");
-        Maybe<LoanDetail> loanDetail =
+        Maybe<LoanDetail> detail =
                 marketplaceService.getLoanDetail(simpleLoan.getId());
 
-        loanDetail.subscribe(marketplaceService::saveLoanDetail);
+        detail.subscribe(loanDetail -> {
+                    Boolean fileSaved = marketplaceService.saveLoanDetail(loanDetail);
+                    if (fileSaved) {
+                        savedFiles++;
+                    }
+                    fileCounter++;
+                }
+        );
     }
 
     @Override
@@ -44,6 +56,10 @@ public class FileWriter implements Observer<SimpleLoan> {
 
     @Override
     public void onComplete() {
-
+        if (fileCounter > 0) {
+            log.info("Saved " + savedFiles + " files out of " + fileCounter);
+        } else {
+            log.info("No files to save received");
+        }
     }
 }
